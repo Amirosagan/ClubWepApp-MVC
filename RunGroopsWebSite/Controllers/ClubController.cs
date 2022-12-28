@@ -71,5 +71,53 @@ namespace RunGroopsWebSite.Controllers
             }
             
         }
+
+        public IActionResult Edit(int id)
+        {
+            Club club = _clubRepository.GetClubById(id);
+
+            EditClubViewModel clubVM = new EditClubViewModel
+            {
+                Id = club.Id,
+                Title = club.Title,
+                Description = club.Description,
+                Url = club.Image,
+                Address = club.Address,
+                Category = club.ClubCategory
+            };
+
+            return View(clubVM);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Edit(int id , EditClubViewModel club)
+        {
+            if(ModelState.IsValid)
+            {
+                Club clubToUpdate = _clubRepository.GetClubById(id);
+
+                clubToUpdate.Title = club.Title;
+                clubToUpdate.Description = club.Description;
+                clubToUpdate.Address = club.Address;
+                clubToUpdate.ClubCategory = club.Category;
+                Console.WriteLine(club.Url);
+
+                if (club.Photo != null)
+                {
+                    var fileName = await _photoService.UploadPhotoAsync(club.Photo);
+                    clubToUpdate.Image = fileName;
+                }
+
+                _clubRepository.Update(clubToUpdate);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(club);
+            }
+            
+        }
     }
 }

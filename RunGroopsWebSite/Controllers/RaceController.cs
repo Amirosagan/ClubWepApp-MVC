@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RunGroopsWebSite.Data;
 using RunGroopsWebSite.Interfaces;
 using RunGroopsWebSite.Models;
+using RunGroopsWebSite.Repository;
 using RunGroopsWebSite.ViewModel;
 
 namespace RunGroopsWebSite.Controllers
@@ -68,6 +69,53 @@ namespace RunGroopsWebSite.Controllers
             else
             {
                 return View();
+            }
+        }
+
+        public async Task<IActionResult> Edit(int id )
+        {
+            Race race = await _raceRepository.GetRaceByIdAsync(id);
+
+            EditRaceViewModel raceVM = new EditRaceViewModel
+            {
+                Address = race.Address,
+                Url = race.Image,
+                Title = race.Title,
+                Description = race.Description,
+                Category = race.RaceCategory,
+                Id = race.Id
+            };
+
+            return View(raceVM);
+        }
+
+        [HttpPost]
+
+        public async Task<IActionResult> Edit(int id , EditRaceViewModel race)
+        {
+            if (ModelState.IsValid)
+            {
+                Race raceToUpdate = await _raceRepository.GetRaceByIdAsync(id);
+
+                raceToUpdate.Title = race.Title;
+                raceToUpdate.Description = race.Description;
+                raceToUpdate.Address = race.Address;
+                raceToUpdate.RaceCategory = race.Category;
+                Console.WriteLine(race.Url);
+
+                if (race.Photo != null)
+                {
+                    var fileName = await _photoService.UploadPhotoAsync(race.Photo);
+                    raceToUpdate.Image = fileName;
+                }
+
+                _raceRepository.Update(raceToUpdate);
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(race);
             }
         }
     }

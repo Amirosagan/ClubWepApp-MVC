@@ -1,0 +1,21 @@
+﻿@model Race
+
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <img class="card-img-top" src="@Model.Image" width="100%" height="225" alt="Card image cap">
+        </div>
+        <div class="col-md-8">
+            <h1>@Model.Title</h1>
+            <p>@Model.Description</p>
+            <p>@Model.RaceCategory</p>
+            <p>@Model.Address.City</p>
+            <p>@Model.Address.Street</p>
+        </div>
+    </div>
+</div>

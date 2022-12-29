@@ -119,5 +119,29 @@ namespace RunGroopsWebSite.Controllers
             }
             
         }
+        [ActionName("Delete")]
+        public IActionResult Delete(int id)
+        {
+            Club club = _clubRepository.GetClubById(id);
+
+            return View(club);
+        }
+
+        [HttpPost, ActionName("Delete")]
+
+        public async Task<IActionResult> DeleteClub(int id)
+        {
+            Club club = _clubRepository.GetClubById(id);
+
+            if (club.Image != null)
+            {
+                await _photoService.DeletePhotoAsync(club.Image);
+            }
+
+            _clubRepository.Remove(club);
+
+            return RedirectToAction("Index");
+        }
+
     }
 }

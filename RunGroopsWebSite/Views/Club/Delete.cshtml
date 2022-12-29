@@ -1,0 +1,7 @@
+﻿@model Club 
+<h1>You Realy want to Delete @Model.Title Club</h1>
+
+<form asp-action="Delete" method="post">
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a class="btn btn-outline-primary" asp-action="Index">Cancel</a>
+</form>

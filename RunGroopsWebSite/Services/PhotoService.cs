@@ -15,9 +15,35 @@ namespace RunGroopsWebSite.Services
             _fileStack = config.GetSection("FileStack").Get<FileStack>();
         }
 
-        public Task<string> DeletePhotoAsync(string url)
+        public async Task<bool> DeletePhotoAsync(string url)
         {
-            throw new NotImplementedException();
+            string[] names = url.Split("/");
+            string name = names[names.Length - 1];
+
+
+                using (var client = new HttpClient())
+                {
+
+                    client.BaseAddress = new Uri(_fileStack.BaseUrl + "file/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+
+
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+
+                    var responseMessage = await client.DeleteAsync($"{name}?key={_fileStack.Apikey}&policy={_fileStack.Policy}&signature={_fileStack.Signature}");
+
+                    if (responseMessage.IsSuccessStatusCode && responseMessage != null)
+                    {                        
+                        return true;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error Code" + responseMessage.StatusCode + " : Message - " + responseMessage.ReasonPhrase);
+                    return false;
+                    }
+            }
+
         }
 
         public async Task<string> UpdatePhotoAsync(IFormFile file, string url)
@@ -35,6 +61,7 @@ namespace RunGroopsWebSite.Services
 
                     client.BaseAddress = new Uri(_fileStack.BaseUrl + "file/");
                     client.DefaultRequestHeaders.Accept.Clear();
+                    
 
                     client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("image/jpeg"));
 

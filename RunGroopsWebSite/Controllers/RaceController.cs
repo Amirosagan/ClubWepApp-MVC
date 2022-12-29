@@ -118,5 +118,29 @@ namespace RunGroopsWebSite.Controllers
                 return View(race);
             }
         }
+
+        [ActionName("Delete")]
+        public async Task<IActionResult> DeleteRace(int id)
+        {
+            Race race = await _raceRepository.GetRaceByIdAsync(id);
+
+            return View(race);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            Race race = await _raceRepository.GetRaceByIdAsync(id);
+
+            if(race.Image is not null)
+            {
+                _photoService.DeletePhotoAsync(race.Image);
+            }
+
+            _raceRepository.Remove(race);
+
+            return RedirectToAction("Index");
+
+        }
     }
 }

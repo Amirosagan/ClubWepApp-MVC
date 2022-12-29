@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using RunGroopsWebSite.Data;
@@ -6,6 +7,7 @@ using RunGroopsWebSite.Interfaces;
 using RunGroopsWebSite.Models;
 using RunGroopsWebSite.Repository;
 using RunGroopsWebSite.ViewModel;
+using System.Data;
 
 namespace RunGroopsWebSite.Controllers
 {
@@ -71,7 +73,7 @@ namespace RunGroopsWebSite.Controllers
                 return View();
             }
         }
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id )
         {
             Race race = await _raceRepository.GetRaceByIdAsync(id);
@@ -90,7 +92,7 @@ namespace RunGroopsWebSite.Controllers
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id , EditRaceViewModel race)
         {
             if (ModelState.IsValid)
@@ -118,7 +120,7 @@ namespace RunGroopsWebSite.Controllers
                 return View(race);
             }
         }
-
+        [Authorize(Roles = "admin")]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteRace(int id)
         {
@@ -126,7 +128,7 @@ namespace RunGroopsWebSite.Controllers
 
             return View(race);
         }
-
+        [Authorize(Roles = "admin")]
         [HttpPost, ActionName("Delete")]
         public async Task<IActionResult> Delete(int id)
         {

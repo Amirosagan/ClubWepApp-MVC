@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RunGroopsWebSite.Data;
 using RunGroopsWebSite.Data.Enum;
@@ -26,7 +27,6 @@ namespace RunGroopsWebSite.Controllers
             var clubs = await _clubRepository.GetAll();
 
             return View(clubs); 
-            
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -71,7 +71,7 @@ namespace RunGroopsWebSite.Controllers
             }
             
         }
-
+        [Authorize(Roles ="admin")]
         public IActionResult Edit(int id)
         {
             Club club = _clubRepository.GetClubById(id);
@@ -90,7 +90,7 @@ namespace RunGroopsWebSite.Controllers
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id , EditClubViewModel club)
         {
             if(ModelState.IsValid)
@@ -119,7 +119,9 @@ namespace RunGroopsWebSite.Controllers
             }
             
         }
+
         [ActionName("Delete")]
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int id)
         {
             Club club = _clubRepository.GetClubById(id);
@@ -128,7 +130,7 @@ namespace RunGroopsWebSite.Controllers
         }
 
         [HttpPost, ActionName("Delete")]
-
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteClub(int id)
         {
             Club club = _clubRepository.GetClubById(id);

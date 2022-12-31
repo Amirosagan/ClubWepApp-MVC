@@ -15,11 +15,13 @@ namespace RunGroopsWebSite.Controllers
     {
         private readonly IRaceRepository _raceRepository;
         private readonly IPhotoService _photoService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RaceController(IRaceRepository raceRepository, IPhotoService photoService)
+        public RaceController(IRaceRepository raceRepository, IPhotoService photoService, IHttpContextAccessor httpContextAccessor)
         {
             _raceRepository = raceRepository;
             _photoService = photoService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IActionResult> Index()
@@ -36,14 +38,19 @@ namespace RunGroopsWebSite.Controllers
 
             return View(race);
         }
-
+        [Authorize(Roles = "admin,user")]
         public IActionResult Create()
         {
+            var curUser = _httpContextAccessor.HttpContext.User.GetUserId();
+            var createRaceViewModel = new CreateRaceViewModel()
+            {
+                AppUserId = curUser
+            };
             return View();
         }
 
         [HttpPost]
-
+        [Authorize(Roles = "admin, user")]
         public async Task<IActionResult> Create(CreateRaceViewModel raceVM)
         {
             if (ModelState.IsValid)
@@ -53,6 +60,7 @@ namespace RunGroopsWebSite.Controllers
                     Title = raceVM.Title,
                     Description = raceVM.Description,
                     Address = raceVM.Address,
+                    AppUserId = raceVM.AppUserId,
                 };
 
                 if (raceVM.Photo != null)

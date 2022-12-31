@@ -11,5 +11,6 @@ namespace RunGroopsWebSite.ViewModel
         public Address Address { get; set; }
         public IFormFile Photo { get; set; }
         public RaceCategory Category { get; set; }
+        public string AppUserId { get; set; }
     }
 }

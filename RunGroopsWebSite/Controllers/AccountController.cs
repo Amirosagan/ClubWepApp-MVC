@@ -21,15 +21,23 @@ namespace RunGroopsWebSite.Controllers
 
         [HttpGet, ActionName("Login")]
 
-        public IActionResult Login()
+        
+        public IActionResult Login([FromQuery(Name = "ReturnUrl")] string ReturnUrl)
         {
             var response = new LoginViewModel();
-            
+
+            if (ReturnUrl != null)
+            {
+                TempData["Error"] = "Please Login to continue";
+            }
+
             return View(response);
         }
 
+        
+        
         [HttpPost]
-
+        
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
